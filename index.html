@@ -241,8 +241,10 @@ ul{margin-left:1.2em}
       </button>
     </article>
     <article class="card reveal">
-      <div class="slot project-placeholder"><strong>02</strong><span>Website example</span></div>
-      <h3>Project Two</h3><p>A second website example.</p>
+      <button class="project-open" id="open-project-two" type="button" aria-haspopup="dialog" aria-controls="project-modal">
+        <div class="slot"><img src="image/cookie1.png" alt="Preview of the cookie website"></div>
+        <div><h3>Project Two</h3><p>A second website example.</p></div>
+      </button>
     </article>
   </div>
 </section>
@@ -268,7 +270,7 @@ ul{margin-left:1.2em}
 
 <dialog class="project-modal" id="project-modal" aria-labelledby="project-modal-title">
   <div class="modal-header">
-    <div><h2 id="project-modal-title">Project One</h2><p>A personal website created in Figma.</p></div>
+    <div><h2 id="project-modal-title">Project One</h2><p id="project-modal-description">A personal website created in Figma.</p></div>
     <button class="modal-close" type="button" aria-label="Close project gallery">&times;</button>
   </div>
   <div class="gallery-frame">
@@ -325,15 +327,36 @@ const projectModal=document.getElementById('project-modal');
 const galleryImage=document.getElementById('gallery-image');
 const galleryCaption=document.getElementById('gallery-caption');
 const galleryStatus=document.getElementById('gallery-status');
-const projectScreenshots=[
-  {src:'image/HOME.png',alt:'Home screen of the personal portfolio website',caption:'Home page'},
-  {src:'image/first%20page.png',alt:'First page of the portfolio website',caption:'First page'},
-  {src:'image/second%20page.png',alt:'Second page of the portfolio website',caption:'Second page'},
-  {src:'image/third%20page.png',alt:'Third page of the portfolio website',caption:'Third page'}
+const projectTitle=document.getElementById('project-modal-title');
+const projectDescription=document.getElementById('project-modal-description');
+const projectGalleries=[
+  {
+    title:'Project One',
+    description:'A personal website created in Figma.',
+    screenshots:[
+      {src:'image/HOME.png',alt:'Home screen of the personal portfolio website',caption:'Home page'},
+      {src:'image/first%20page.png',alt:'First page of the portfolio website',caption:'First page'},
+      {src:'image/second%20page.png',alt:'Second page of the portfolio website',caption:'Second page'},
+      {src:'image/third%20page.png',alt:'Third page of the portfolio website',caption:'Third page'}
+    ]
+  },
+  {
+    title:'Project Two',
+    description:'A second website example.',
+    screenshots:[
+      {src:'image/cookie1.png',alt:'First screen of the cookie website',caption:'Cookie page 1'},
+      {src:'image/cookie2.png',alt:'Second screen of the cookie website',caption:'Cookie page 2'},
+      {src:'image/cookie3.png',alt:'Third screen of the cookie website',caption:'Cookie page 3'},
+      {src:'image/cookie4.png',alt:'Fourth screen of the cookie website',caption:'Cookie page 4'}
+    ]
+  }
 ];
+let activeProject=0;
 let activeScreenshot=0;
-function showScreenshot(index){activeScreenshot=(index+projectScreenshots.length)%projectScreenshots.length;const screenshot=projectScreenshots[activeScreenshot];galleryImage.src=screenshot.src;galleryImage.alt=screenshot.alt;galleryCaption.textContent=screenshot.caption;galleryStatus.textContent=`${activeScreenshot+1} / ${projectScreenshots.length}`}
-document.getElementById('open-project-one').addEventListener('click',()=>{showScreenshot(0);projectModal.showModal()});
+function showScreenshot(index){const screenshots=projectGalleries[activeProject].screenshots;activeScreenshot=(index+screenshots.length)%screenshots.length;const screenshot=screenshots[activeScreenshot];galleryImage.src=screenshot.src;galleryImage.alt=screenshot.alt;galleryCaption.textContent=screenshot.caption;galleryStatus.textContent=`${activeScreenshot+1} / ${screenshots.length}`}
+function openProject(index){activeProject=index;const project=projectGalleries[index];projectTitle.textContent=project.title;projectDescription.textContent=project.description;showScreenshot(0);projectModal.showModal()}
+document.getElementById('open-project-one').addEventListener('click',()=>openProject(0));
+document.getElementById('open-project-two').addEventListener('click',()=>openProject(1));
 document.getElementById('gallery-previous').addEventListener('click',()=>showScreenshot(activeScreenshot-1));
 document.getElementById('gallery-next').addEventListener('click',()=>showScreenshot(activeScreenshot+1));
 projectModal.querySelector('.modal-close').addEventListener('click',()=>projectModal.close());
